@@ -10,6 +10,8 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 
 import java.io.File;
 
+
+//第5个录屏中断后
 public class FileWatchImpl implements FileWatch, FileAlterationListener {
 
     private FileIndexDao fileIndexDao;

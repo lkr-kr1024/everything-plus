@@ -18,7 +18,7 @@ public class FileIndexInterceptor implements FileInterceptor {
     @Override
     public void apply(File file) {
         Thing thing = FileConvertThing.convert(file);
-        System.out.println("Thing ==>"+ thing);
+//        System.out.println("Thing ==>"+ thing);//review注掉
         fileIndexDao.insert(thing);
     }
 }

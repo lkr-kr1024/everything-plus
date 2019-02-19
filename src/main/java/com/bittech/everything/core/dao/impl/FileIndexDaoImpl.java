@@ -5,7 +5,7 @@ import com.bittech.everything.core.dao.FileIndexDao;
 import com.bittech.everything.core.model.Condition;
 import com.bittech.everything.core.model.FileType;
 import com.bittech.everything.core.model.Thing;
-import jdk.internal.org.objectweb.asm.tree.MethodNode;
+//import jdk.internal.org.objectweb.asm.tree.MethodNode;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -45,12 +45,13 @@ public class FileIndexDaoImpl implements FileIndexDao {
             statement.executeUpdate();
 
         }catch (SQLException e){
-
+            e.printStackTrace();
         }finally {
            releaseResource(null,statement,connection);
         }
     }
 
+    //第5视频后
     @Override
     public void delete(Thing thing) {
         Connection connection = null;
@@ -59,6 +60,8 @@ public class FileIndexDaoImpl implements FileIndexDao {
             //1.获取数据库连接
             connection = dataSource.getConnection();
             //2.准备SQL语句
+            //如果删除的是文件，那么就删了一个；
+            // 如果是一个目录，那么就把以path前缀开头的目录及目录下的所有文件一次都删除了
             String sql = "delete from file_index where path like '" + thing.getPath() + "%'";
             //3.准备命令
             statement = connection.prepareStatement(sql);
@@ -108,13 +111,23 @@ public class FileIndexDaoImpl implements FileIndexDao {
                         .append("' ");
             }
             //limit, order by必选的
-            sqlBuilder.append(" order by depth ")
-                    .append(condition.getOrderByAsc() ? "asc" : "desc");
-            sqlBuilder.append(" limit ")
-                    .append(condition.getLimit())
-                    .append(" offset 0 ");
+//            sqlBuilder.append(" order by depth ")
+//                    .append(condition.getOrderByAsc() ? "asc" : "desc");//NullPointerException
+//            sqlBuilder.append(" limit ")
+//                    .append(condition.getLimit())
+//                    .append(" offset 0 ");
+//            System.out.println(sqlBuilder);
+            //NullPointerException,修改如下加判断：
+            if (condition.getOrderByAsc() != null) {
+                sqlBuilder.append(" order by depth ")
+                        .append(condition.getOrderByAsc() ? "asc" : "desc");
+            }
+            if(condition.getLimit() != null) {
+                sqlBuilder.append(" limit ")
+                        .append(condition.getLimit())
+                        .append(" offset 0 ");
+            }
 
-            System.out.println(sqlBuilder);
             //3.准备命令
             statement = connection.prepareStatement(sqlBuilder.toString());
             //4.设置参数 1 2 3 4
@@ -136,7 +149,7 @@ public class FileIndexDaoImpl implements FileIndexDao {
                 things.add(thing);
             }
         }catch (SQLException e){
-
+            e.printStackTrace();
         }finally {
             releaseResource(resultSet,statement,connection);
         }

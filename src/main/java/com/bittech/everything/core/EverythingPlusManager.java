@@ -8,6 +8,7 @@ import com.bittech.everything.core.dao.impl.FileIndexDaoImpl;
 import com.bittech.everything.core.index.FileScan;
 import com.bittech.everything.core.index.impl.FileScanImpl;
 import com.bittech.everything.core.interceptor.impl.FileIndexInterceptor;
+import com.bittech.everything.core.interceptor.impl.FilePrintInterceptor;
 import com.bittech.everything.core.interceptor.impl.ThingClearInterceptor;
 import com.bittech.everything.core.model.Condition;
 import com.bittech.everything.core.model.Thing;
@@ -41,7 +42,7 @@ public class EverythingPlusManager {
 //        this.fileSearch = fileSearch;
 //        this.fileScan = fileScan;
 //    }
-
+//第5个录屏中断后
     /**
      * 清理删除的文件
      */
@@ -61,7 +62,12 @@ public class EverythingPlusManager {
     private void initComponent() {
         //数据源对象
         DataSource dataSource = DataSourceFactory.dataSource();
+//拿到数据源对象后，初始化数据库，首先检查当前工作目录下有没有数据库，有就不该重复初始化
 
+        /**
+         * 检查数据库
+         */
+//        checkDatabase();
         initOrResetDatabase();
 
         //业务层的对象
@@ -70,11 +76,14 @@ public class EverythingPlusManager {
         this.fileSearch = new FileSearchImpl(fileIndexDao);
 
         this.fileScan = new FileScanImpl();
-
+//第6个视频12点重构
+        //在真正发布代码的时候是不需要的
+//        this.fileScan.interceptor(new FilePrintInterceptor());
         this.fileScan.interceptor(new FileIndexInterceptor(fileIndexDao));
-
+//重构时没有下面代码
         this.thingClearInterceptor = new ThingClearInterceptor(fileIndexDao);
         this.backgroundClearThread = new Thread(this.thingClearInterceptor);
+        //清理默认线程用户线程，需要把它变成守护线程，程序退出时它也停止
         this.backgroundClearThread.setName("Thread-Thing-Clear");
         this.backgroundClearThread.setDaemon(true);
 
@@ -83,6 +92,16 @@ public class EverythingPlusManager {
 
     }
 
+//    private void checkDatabase() {
+//        String workDir = System.getProperty("user.dir");
+//        String fileName = EverythingPlusConfig.getInstance().getH2IndexPath() + File.separator+".mv.db";
+//        File dbFile = new File(fileName);
+//        if (dbFile.isFile() && !dbFile.exists()){
+//            DataSourceFactory.initDatabase();
+//        }
+//    }
+
+    //第5个录屏中断后
     public void initOrResetDatabase() {
         DataSourceFactory.initDatabase();
     }
@@ -97,7 +116,7 @@ public class EverythingPlusManager {
         }
         return manager;
     }
-
+//第5个录屏中断，12点之后的扩展
     /**
      * 检索（客户端只需要调用这个方法即可）
      */
@@ -111,6 +130,7 @@ public class EverythingPlusManager {
                     boolean flag = f.exists();
                     if (!flag) {
                         //做删除
+                        //生产者-消费者
                         thingClearInterceptor.apply(thing);
                     }
                     return flag;
@@ -147,14 +167,11 @@ public class EverythingPlusManager {
 
         System.out.println("Build index start...");
         for (String path:directories){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    EverythingPlusManager.this.fileScan.index(path);
-                    //当前任务完成，值减一
-                    countDownLatch.countDown();
-                }
-            }).start();
+            this.executorService.submit(() -> {
+                EverythingPlusManager.this.fileScan.index(path);
+                //当前任务完成，值减一
+                countDownLatch.countDown();
+            });
         }
         /**
          * 阻塞，直到任务完成，值为0
@@ -168,10 +185,23 @@ public class EverythingPlusManager {
         //多线程判断构建索引完成CountDownLatch类
         //或者自己加标记，死循环完成一个减一，此处采用jdk提供的类
     }
+
+    //第5个录屏中断后，12：28
     /**
      * 启动清理线程
      */
+//    public void startBackgroundClearThread() {
+//        if (this.backgroundClearThreadStatus.get()) {
+//            System.out.println("Cant repeat start BackgroundClearThread");
+//        } else {
+    //多线程下存在资源竞争,改成下面更原子的操作
+//            this.backgroundClearThread.start();
+//            this.backgroundClearThreadStatus.set(false);
+//        }
+//    }
     public void startBackgroundClearThread() {
+        //main中不能启动多次，所有加标记，对应上边private AtomicBoolean backgroundClearThreadStatus = new AtomicBoolean(false);
+
         if (this.backgroundClearThreadStatus.compareAndSet(false, true)) {
             this.backgroundClearThread.start();
         } else {

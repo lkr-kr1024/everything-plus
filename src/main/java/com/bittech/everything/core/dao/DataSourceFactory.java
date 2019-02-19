@@ -1,6 +1,7 @@
 package com.bittech.everything.core.dao;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.bittech.everything.config.EverythingPlusConfig;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -35,15 +36,16 @@ public class DataSourceFactory {
                     //采用的是H2的嵌入式数据库，数据库以本地文件的方式存储，只需要提供url接口
                     //JDBC规范中关于MySQL    jdbc:mysql://ip:port/databaseName
 
-                    //获取当前工程路径
-                    String workDir = System.getProperty("user.dir");
+                    //获取当前工程路径//update： 此处是copy过来的,应该是读取来的，所以加到config里,
+                    //这里就不要了
+//                    String workDir = System.getProperty("user.dir");
                     //嵌入式
                     //JDBC规范中关于H2   jdbc:h2:filepath    ->存储到本地文件
                     //JDBC规范中关于H2   jdbc:h2:~/filepath    ->存储到当前用户的home目录
 
                     //JDBC规范中关于H2   jdbc:h2://ip:port/databaseName  ->存储到服务器
                     //
-                    dataSource.setUrl("jdbc:h2:"+workDir+File.separator+"everything_plus");
+                    dataSource.setUrl("jdbc:h2:"+ EverythingPlusConfig.getInstance().getH2IndexPath());
                 }
             }
         }
@@ -55,6 +57,9 @@ public class DataSourceFactory {
 //        DataSource dataSource = DataSourceFactory.dataSource();
 //        System.out.println(dataSource);
 //    }
+
+    //初始化数据库，第一次启动和检查当前文件目录里有没有数据库文件，没有才初始化
+    //在交互或者管理器初始化，此处在管理器处
     public static void initDatabase(){
         //1.获取数据源
         DataSource dataSource =
@@ -104,12 +109,10 @@ public class DataSourceFactory {
             connection.close();
             statement.close();
 
-        }catch (IOException e){
-
-        } catch (SQLException e) {
+        }
+        catch (IOException | SQLException e){
             e.printStackTrace();
         }
-
     }
 
 }

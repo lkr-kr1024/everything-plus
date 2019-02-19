@@ -31,16 +31,16 @@ public interface FileScan {
      */
     void interceptor(FileInterceptor interceptor);
 
-    public static void main(String[] args) {
-        DataSourceFactory.initDatabase();
-        FileScanImpl scan = new FileScanImpl();
-        FileInterceptor printInterceptor = new FilePrintInterceptor();
-        scan.interceptor(printInterceptor);
-
-        FileIndexInterceptor fileIndexInterceptor = new
-                FileIndexInterceptor(new FileIndexDaoImpl(DataSourceFactory.dataSource()));
-
-        scan.interceptor(fileIndexInterceptor);
-        scan.index("E:\\C++资料书\\C++进阶");
-    }
+//    public static void main(String[] args) {
+//        DataSourceFactory.initDatabase();
+//        FileScanImpl scan = new FileScanImpl();
+//        FileInterceptor printInterceptor = new FilePrintInterceptor();
+//        scan.interceptor(printInterceptor);
+//
+//        FileIndexInterceptor fileIndexInterceptor = new
+//                FileIndexInterceptor(new FileIndexDaoImpl(DataSourceFactory.dataSource()));
+//
+//        scan.interceptor(fileIndexInterceptor);
+//        scan.index("E:\\C++资料书\\C++进阶");
+//    }
 }

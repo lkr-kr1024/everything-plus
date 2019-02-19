@@ -24,10 +24,12 @@ public final class FileConvertThing {//没法继承
         return thing;
     }
     private static int computeFileDepth(File file){
-        int dept = 0;
+//        int dept = 0;
+//        String[] segments = file.getAbsolutePath().split("\\\\");
+//        dept = segments.length;
+//        return dept;
         String[] segments = file.getAbsolutePath().split("\\\\");
-        dept = segments.length;
-        return dept;
+        return segments.length;
     }
     private static FileType computeFileType(File file){
         if (file.isDirectory()){

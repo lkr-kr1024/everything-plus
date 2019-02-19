@@ -4,7 +4,7 @@ import com.bittech.everything.core.model.Condition;
 import com.bittech.everything.core.model.Thing;
 
 import java.util.List;
-
+//第5个录屏中断后
 /**
  * 业务层访问数据库的CRUD
  */

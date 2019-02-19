@@ -7,7 +7,7 @@ import com.bittech.everything.core.model.Thing;
 
 import java.util.List;
 import java.util.Scanner;
-
+//第5个录屏中断后
 public class EverythingPlusCmdApp {
 
     private static Scanner scanner = new Scanner(System.in);
@@ -30,12 +30,72 @@ public class EverythingPlusCmdApp {
 //        manager.startFileSystemMonitor();
 
         //交互式
-        //interactive(manager);
+        interactive(manager);
 
     }
 
+    private static void interactive(EverythingPlusManager manager) {
+        while (true){
+            System.out.println("everything >>");
+            String input = scanner.nextLine();
+            //优先处理search
+            if (input.startsWith("search")){
+                //search name [file_type]
+                String[] values = input.split(" ");
+                if (values.length >= 2){
+                    if (!values[0].equals("search")){
+                        help();
+                        continue;
+                    }
+                    Condition condition = new Condition();
+                    String name = values[1];
+                    condition.setName(name);
+                    if (values.length >= 3){
+                        String fileType = values[2];
+                        condition.setFileType(fileType.toUpperCase());
+                    }
+                    search(manager,condition);
+                    continue;
+                }else {
+                    help();
+                    continue;
+                }
+            }
+            switch (input){
+                case "help":
+                    help();
+                    break;
+                case "quit":
+                    quit();
+                    return;
+                case "index":
+                    index(manager);
+                    break;
+                default:
+                    help();
+            }
+        }
+    }
 
+private  static void search(EverythingPlusManager manager, Condition condition){
+    System.out.println("检索功能");
+    //统一调度器中的search
+    //name fileType limit orderByAsc
+    List<Thing> thingList = manager.search(condition);
+    for (Thing thing:thingList) {
+        System.out.println(thing.getPath());
+    }
+}
 
+//    private static void index(EverythingPlusManager manager) {
+//        //统一调度器中的index
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                manager.buildIndex();
+//            }
+//        }).start();
+//    }
 //    private static void search(EverythingPlusManager manager, Condition condition) {
 //        //name fileType limit orderByAsc
 //        condition.setLimit(EverythingPlusConfig.getInstance().getMaxReturn());
@@ -44,7 +104,6 @@ public class EverythingPlusCmdApp {
 //        for (Thing thing : thingList) {
 //            System.out.println(thing.getPath());
 //        }
-//
 //    }
 
     private static void index(EverythingPlusManager manager) {

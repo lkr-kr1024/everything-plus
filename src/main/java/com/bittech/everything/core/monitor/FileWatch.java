@@ -2,6 +2,7 @@ package com.bittech.everything.core.monitor;
 
 import com.bittech.everything.core.common.HandlePath;
 
+//第5个录屏中断后
 public interface FileWatch {
     /**
      * 监听启动
