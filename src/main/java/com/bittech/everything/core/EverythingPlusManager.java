@@ -92,6 +92,7 @@ public class EverythingPlusManager {
 
     }
 
+    //存在bug
 //    private void checkDatabase() {
 //        String workDir = System.getProperty("user.dir");
 //        String fileName = EverythingPlusConfig.getInstance().getH2IndexPath() + File.separator+".mv.db";
@@ -101,7 +102,7 @@ public class EverythingPlusManager {
 //        }
 //    }
 
-    //第5个录屏中断后
+
     public void initOrResetDatabase() {
         DataSourceFactory.initDatabase();
     }
@@ -142,6 +143,7 @@ public class EverythingPlusManager {
      * 索引
      */
     public void buildIndex(){
+        initOrResetDatabase();
         Set<String> directories = EverythingPlusConfig.getInstance().getIncludePath();
 
         //同步操作，C->D->E-...

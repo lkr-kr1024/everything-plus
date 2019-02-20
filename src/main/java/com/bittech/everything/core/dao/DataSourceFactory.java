@@ -46,6 +46,14 @@ public class DataSourceFactory {
                     //JDBC规范中关于H2   jdbc:h2://ip:port/databaseName  ->存储到服务器
                     //
                     dataSource.setUrl("jdbc:h2:"+ EverythingPlusConfig.getInstance().getH2IndexPath());
+
+                    //Druid数据库连接池的可配置参数
+                    //解决：严重: testWhileIdle is true, validationQuery not set
+                    //https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
+                    //第一种
+                    dataSource.setValidationQuery("select now()");
+//                    第二种
+//                    dataSource.setTestWhileIdle(false);
                 }
             }
         }

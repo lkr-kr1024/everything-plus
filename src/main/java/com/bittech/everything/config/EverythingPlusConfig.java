@@ -13,8 +13,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 //配置类，引用单例
-@Getter
 //getter保证属性includePath，excludePath只被获取不被修改
+@Getter
+//2/17:search的可配置，param可修改
+//@Setter
 public class EverythingPlusConfig {
     private static volatile EverythingPlusConfig config;
 
@@ -29,10 +31,12 @@ public class EverythingPlusConfig {
     private Set<String> excludePath = new HashSet<>();
 
     //TODO 可配置的参数
-
+///////////////////////////////////////////////////
+    //此时可以配置，但值还是固定的，值可变需要通过main args让用户传入
     /**
      * 检索最大的返回值数量
      */
+    //2/17/9:46,不给includePath和excludePath   setter
     @Setter
     private Integer maxReturn = 30;
 
@@ -42,7 +46,7 @@ public class EverythingPlusConfig {
      */
     @Setter
     private Boolean depthOrderAsc = true;
-
+///////////////////////////////////////////////////
     /**
      * H2数据库文件路径
      */
