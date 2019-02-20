@@ -53,7 +53,7 @@ public class EverythingPlusManager {
     /**
      * 文件监控
      */
-//    private FileWatch fileWatch;
+    private FileWatch fileWatch;
 
     private EverythingPlusManager() {
         this.initComponent();
@@ -88,7 +88,7 @@ public class EverythingPlusManager {
         this.backgroundClearThread.setDaemon(true);
 
         //文件监控对象
-//        this.fileWatch = new FileWatchImpl(fileIndexDao);
+        this.fileWatch = new FileWatchImpl(fileIndexDao);
 
     }
 
@@ -214,19 +214,18 @@ public class EverythingPlusManager {
     /**
      * 启动文件系统监听
      */
-//    public void startFileSystemMonitor() {
-//        EverythingPlusConfig config = EverythingPlusConfig.getInstance();
-//        HandlePath handlePath = new HandlePath();
-//        handlePath.setIncludePath(config.getIncludePath());
-//        handlePath.setExcludePath(config.getExcludePath());
-//        this.fileWatch.monitor(handlePath);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                System.out.println("文件系统监控启动");
-//                fileWatch.start();
-//            }
-//        }).start();
-//    }
-//}
+    public void startFileSystemMonitor() {
+        EverythingPlusConfig config = EverythingPlusConfig.getInstance();
+        HandlePath handlePath = new HandlePath();
+        handlePath.setIncludePath(config.getIncludePath());
+        handlePath.setExcludePath(config.getExcludePath());
+        this.fileWatch.monitor(handlePath);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("文件系统监控启动");
+                fileWatch.start();
+            }
+        }).start();
+    }
 }

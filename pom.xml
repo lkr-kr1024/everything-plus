@@ -56,6 +56,7 @@
             <version>1.1.2</version>
         </dependency>
 
+        <!--监控os文件系统中文件的变化，用到Apache Commons IO/File Monitor，不下载，使用maven-->
         <!--版本比较低-->
         <!--<dependency>-->
         <!--<groupId>org.apache.commons</groupId>-->

@@ -24,10 +24,11 @@ public class DataSourceFactory {
     private DataSourceFactory() {
 
     }
-    public static DataSource dataSource(){
+
+    public static DataSource dataSource() {
         if (dataSource == null) {
-            synchronized (DataSourceFactory.class){
-                if (dataSource == null){
+            synchronized (DataSourceFactory.class) {
+                if (dataSource == null) {
                     //实例化
                     dataSource = new DruidDataSource();
                     //JDBC driver class
@@ -45,7 +46,7 @@ public class DataSourceFactory {
 
                     //JDBC规范中关于H2   jdbc:h2://ip:port/databaseName  ->存储到服务器
                     //
-                    dataSource.setUrl("jdbc:h2:"+ EverythingPlusConfig.getInstance().getH2IndexPath());
+                    dataSource.setUrl("jdbc:h2:" + EverythingPlusConfig.getInstance().getH2IndexPath());
 
                     //Druid数据库连接池的可配置参数
                     //解决：严重: testWhileIdle is true, validationQuery not set
@@ -68,7 +69,7 @@ public class DataSourceFactory {
 
     //初始化数据库，第一次启动和检查当前文件目录里有没有数据库文件，没有才初始化
     //在交互或者管理器初始化，此处在管理器处
-    public static void initDatabase(){
+    public static void initDatabase() {
         //1.获取数据源
         DataSource dataSource =
                 DataSourceFactory.dataSource();
@@ -88,18 +89,18 @@ public class DataSourceFactory {
 
 
         //自动关闭流采取try-with-resource
-        try(InputStream in = DataSourceFactory.class.getClassLoader()
-                .getResourceAsStream("everything_plus.sql")){
-            if (in == null){
-                throw new RuntimeException("Not read init database script please check it" );
+        try (InputStream in = DataSourceFactory.class.getClassLoader()
+                .getResourceAsStream("everything_plus.sql")) {
+            if (in == null) {
+                throw new RuntimeException("Not read init database script please check it");
             }
             StringBuilder sqlBuilder = new StringBuilder();
             //拿到流，把它变成字符串得到sql语句
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in));){
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in));) {
 
                 String line = null;
-                while ((line = reader.readLine()) != null){
-                    if (!line.startsWith("--")){
+                while ((line = reader.readLine()) != null) {
+                    if (!line.startsWith("--")) {
                         sqlBuilder.append(line);
                     }
                 }
@@ -117,10 +118,8 @@ public class DataSourceFactory {
             connection.close();
             statement.close();
 
-        }
-        catch (IOException | SQLException e){
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

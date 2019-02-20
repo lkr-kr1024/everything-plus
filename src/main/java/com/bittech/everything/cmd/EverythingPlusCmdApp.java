@@ -4,7 +4,7 @@ import com.bittech.everything.config.EverythingPlusConfig;
 import com.bittech.everything.core.EverythingPlusManager;
 import com.bittech.everything.core.model.Condition;
 import com.bittech.everything.core.model.Thing;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +29,7 @@ public class EverythingPlusCmdApp {
         manager.startBackgroundClearThread();
 
         //启动监控
-//        manager.startFileSystemMonitor();
+        manager.startFileSystemMonitor();
 
         //交互式
         interactive(manager);
@@ -78,7 +78,7 @@ public class EverythingPlusCmdApp {
                 }
             }
             String excludePathParam = "--excludePath=";
-            if (param.startsWith(includePathParam)) {
+            if (param.startsWith(excludePathParam)) {
                 //--excludePath=values (;)
                 int index = param.indexOf("=");
                 String excludePathStr = param.substring(index + 1);
